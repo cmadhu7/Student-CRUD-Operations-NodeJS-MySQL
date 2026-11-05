@@ -1,0 +1,118 @@
+<!-- To list one student data -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Student</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="search-page">
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">S</div>
+                <h1>Student Search</h1>
+            </div>
+
+            <nav class="navbar" aria-label="Main navigation">
+                <div class="nav-links">
+                    <a class="nav-link" href="index.html">Home</a>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button">Students ▾</button>
+                        <div class="dropdown-menu">
+                            <a href="list.html">List Students</a>
+                            <a href="listOne.html">Search Student</a>
+                            <a href="insert.html">Add Student</a>
+                            <a href="update.html">Update Student</a>
+                            <a href="delete.html">Delete Student</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="content-card">
+            <div class="page-header">
+                <h2>Search Student Record</h2>
+                <button class="secondary-btn" onclick="location.href='index.html'">Home Page</button>
+            </div>
+
+            <div class="form-layout">
+                <div class="field full-row">
+                    <label for="sno">Student Number</label>
+                    <input type="number" id="sno" placeholder="Enter student number">
+                </div>
+                <div class="full-row">
+                    <button class="primary-btn" onclick="searchStudent()">Search</button>
+                </div>
+            </div>
+
+            <div id="statusBox" class="status" role="status"></div>
+
+            <div class="search-result-card" id="resultBox">
+                <div class="empty-state">Enter a student number to display the matching record.</div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function showStatus(message, type) {
+            const box = document.getElementById('statusBox');
+            box.textContent = message;
+            box.className = 'status visible ' + type;
+        }
+
+        function searchStudent() {
+            const sno = document.getElementById('sno').value;
+            const resultBox = document.getElementById('resultBox');
+
+            if (!sno) {
+                showStatus('Please enter a student number.', 'error');
+                resultBox.innerHTML = '<div class="empty-state">Enter a student number to display the matching record.</div>';
+                return;
+            }
+
+            fetch('/students/' + sno)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Student not found.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        resultBox.innerHTML = '<div class="empty-state">No student found with this number.</div>';
+                        showStatus('Student not found.', 'error');
+                        return;
+                    }
+
+                    const student = data[0];
+                    resultBox.innerHTML = `
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student Number</th>
+                                    <th>Name</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>${student.student_id}</td>
+                                    <td>${student.student_name}</td>
+                                    <td>${student.total}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `;
+                    showStatus('Student record found successfully.', 'success');
+                })
+                .catch(error => {
+                    resultBox.innerHTML = '<div class="empty-state">No student found with this number.</div>';
+                    showStatus(error.message, 'error');
+                });
+        }
+    </script>
+</body>
+</html>

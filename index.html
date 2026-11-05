@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="index-page">
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">S</div>
+                <h1>School Management</h1>
+            </div>
+
+            <nav class="navbar" aria-label="Main navigation">
+                <div class="nav-links">
+                    <a class="nav-link" href="index.html">Home</a>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button">Students ▾</button>
+                        <div class="dropdown-menu">
+                            <a href="list.html">List Students</a>
+                            <a href="listOne.html">Search Student</a>
+                            <a href="insert.html">Add Student</a>
+                            <a href="update.html">Update Student</a>
+                            <a href="delete.html">Delete Student</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="content-card hero">
+            <div>
+                <h2>Student Management Dashboard</h2>
+                <p>Track student records, search academic details, add new learners, update information, and remove records securely from one professional school administration portal.</p>
+                <div class="hero-actions">
+                    <a class="primary-btn" href="list.html">View Students</a>
+                    <a class="secondary-btn" href="insert.html">Add Student</a>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">System Status</div>
+                <div class="stat-value" id="statusValue">Online</div>
+                <div class="stat-label" style="margin-top: 14px;">MySQL CRUD</div>
+                <div style="color: var(--success); font-weight: 700;">Connected</div>
+            </div>
+        </main>
+
+        <section class="dashboard-grid" aria-label="Quick stats">
+            <article class="stat-card">
+                <div class="stat-label">Total Students</div>
+                <div class="stat-value" id="totalStudents">0</div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">Active Records</div>
+                <div class="stat-value" id="activeRecords">Live</div>
+            </article>
+            <article class="stat-card">
+                <div class="stat-label">Operations</div>
+                <div class="stat-value" id="operationsCount">5</div>
+            </article>
+        </section>
+    </div>
+
+    <script>
+        fetch('/students')
+            .then(response => response.json())
+            .then(data => {
+                const total = Array.isArray(data) ? data.length : 0;
+                document.getElementById('totalStudents').textContent = total;
+            })
+            .catch(() => {
+                document.getElementById('totalStudents').textContent = 'N/A';
+            });
+    </script>
+</body>
+
+</html>
